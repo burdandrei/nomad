@@ -181,6 +181,8 @@ type Template struct {
 	ChangeSignal string
 	Splay        time.Duration
 	Perms        string
+	LeftDelim    *string
+	RightDelim   *string
 }
 
 type Vault struct {

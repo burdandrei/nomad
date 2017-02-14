@@ -859,7 +859,9 @@ func parseTemplates(result *[]*structs.Template, list *ast.ObjectList) error {
 			"change_signal",
 			"data",
 			"destination",
+			"left_delimiter",
 			"perms",
+			"right_delimiter",
 			"source",
 			"splay",
 		}
