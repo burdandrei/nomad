@@ -462,6 +462,30 @@ page for more details.
     <td>Integer</td>
     <td>Gauge</td>
   </tr>
+  <tr>
+    <td>`nomad.client.allocs.<Job>.<TaskGroup>.<AllocID>.<Task>.cpu.allocated`</td>
+    <td>Total CPU allocated for this task</td>
+    <td>Integer</td>
+    <td>Gauge</td>
+  </tr>
+  <tr>
+    <td>`nomad.client.allocs.<Job>.<TaskGroup>.<AllocID>.<Task>.memory.allocated`</td>
+    <td>Allocated amount of memory for this task</td>
+    <td>Bytes</td>
+    <td>Gauge</td>
+  </tr>
+  <tr>
+    <td>`nomad.client.allocs.<Job>.<TaskGroup>.<AllocID>.<Task>.disk.allocated`</td>
+    <td>Allocated amount of disk space for this task</td>
+    <td>Bytes</td>
+    <td>Gauge</td>
+  </tr>
+  <tr>
+    <td>`nomad.client.allocs.<Job>.<TaskGroup>.<AllocID>.<Task>.netwotk.<Device>.mbits.allocated`</td>
+    <td>Allocated amount of network throughput for this task</td>
+    <td>Bytes</td>
+    <td>Gauge</td>
+  </tr>
 </table>
 
 # Metric Types

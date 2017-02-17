@@ -1752,4 +1752,13 @@ func (r *TaskRunner) emitStats(ru *cstructs.TaskResourceUsage) {
 		metrics.SetGauge([]string{"client", "allocs", r.alloc.Job.Name, r.alloc.TaskGroup, r.alloc.ID, r.task.Name, "cpu", "throttled_periods"}, float32(ru.ResourceUsage.CpuStats.ThrottledPeriods))
 		metrics.SetGauge([]string{"client", "allocs", r.alloc.Job.Name, r.alloc.TaskGroup, r.alloc.ID, r.task.Name, "cpu", "total_ticks"}, float32(ru.ResourceUsage.CpuStats.TotalTicks))
 	}
+	// emit Allocated resources even if nothing was used
+	if r.config.PublishAllocationMetrics {
+		metrics.SetGauge([]string{"client", "allocs", r.alloc.Job.Name, r.alloc.TaskGroup, r.alloc.ID, r.task.Name, "cpu", "allocated"}, float32(r.alloc.Resources.CPU))
+		metrics.SetGauge([]string{"client", "allocs", r.alloc.Job.Name, r.alloc.TaskGroup, r.alloc.ID, r.task.Name, "memory", "allocated"}, float32(r.alloc.Resources.MemoryMB))
+		metrics.SetGauge([]string{"client", "allocs", r.alloc.Job.Name, r.alloc.TaskGroup, r.alloc.ID, r.task.Name, "disk", "allocated"}, float32(r.alloc.Resources.DiskMB))
+		for _, n := range r.alloc.Resources.Networks {
+			metrics.SetGauge([]string{"client", "allocs", r.alloc.Job.Name, r.alloc.TaskGroup, r.alloc.ID, r.task.Name, "network", n.Device, "mbits", "allocated"}, float32(n.MBits))
+		}
+	}
 }
