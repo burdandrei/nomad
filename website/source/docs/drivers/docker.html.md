@@ -329,6 +329,8 @@ The `docker` driver supports the following configuration in the job spec.  Only
     }
     ```
 
+* `mem_limit_disable` - (Optional) `true` or `false` (default). Run docker container with soft memory limit instead of hard limit.
+
 ### Container Name
 
 Nomad creates a container after pulling an image. Containers are named
