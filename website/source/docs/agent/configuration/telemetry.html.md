@@ -183,3 +183,75 @@ These `telemetry` parameters apply to
   best use of this is to as a hint for which broker should be used based on
   *where* this particular instance is running (e.g. a specific geographic location or
   datacenter, dc:sfo).
+
+### `influxdb`
+
+There is an option to receive the metrics in [InfluxDB](https://www.influxdata.com) using [Telegraf StatsD Receiver](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/statsd).
+
+Here is the telegraf config to with templates to convert statsd to influx data structure:
+```toml
+# Templates are updated to be compatible with nomad > 0.7.1
+[agent]
+  interval = "10s"
+  round_interval = true
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "10s"
+  flush_jitter = "3s"
+  precision = ""
+  debug = false
+  quiet = false
+  hostname = ""
+  omit_hostname = true
+[[outputs.influxdb]]
+  urls = ["http://influxdb.service.consul:8086"] # required
+  database = "statsd" # required
+  retention_policy = ""
+  timeout = "5s"
+[[inputs.internal]]
+  [inputs.internal.tags]
+    host = "telegraf-statsd-receiver"
+[[inputs.statsd]]
+  service_address = ":8125"
+  delete_gauges = false
+  delete_counters = false
+  delete_sets = false
+  delete_timings = true
+  percentiles = [90]
+  metric_separator = "_"
+  templates = [
+    "nomad.client.allocated.network.* measurement.measurement.field.field.node-id.datacenter.interface.hostname",
+    "nomad.client.allocated.* measurement.measurement.field.field.node-id.datacenter.hostname",
+    "nomad.client.allocations.* measurement.measurement.field.field.node-id.datacenter.hostname",
+    "nomad.client.allocs.complete.* measurement.measurement.measurement.field.job.task-group.alloc-id.task.hostname",
+    "nomad.client.allocs.destroy.* measurement.measurement.measurement.field.job.task-group.alloc-id.task.hostname",
+    "nomad.client.allocs.restart.* measurement.measurement.measurement.field.job.task-group.alloc-id.task.hostname",
+    "nomad.client.allocs.running.* measurement.measurement.measurement.field.job.task-group.alloc-id.task.hostname",
+    "nomad.client.allocs.start.* measurement.measurement.measurement.field.job.task-group.alloc-id.task.hostname",
+    "nomad.client.allocs.* measurement.measurement.measurement.field.field.job.task-group.alloc-id.task.hostname",
+    "nomad.client.consul.checks.* measurement.measurement.field.hostname",
+    "nomad.client.consul.services.* measurement.measurement.field.hostname",
+    "nomad.client.consul.* measurement.measurement.field.field.hostname",
+    "nomad.client.host.cpu.* measurement.measurement.measurement.field.field.node-id.datacenter.cpu-core.hostname",
+    "nomad.client.host.disk.* measurement.measurement.measurement.field.field.node-id.datacenter.device-name.hostname",
+    "nomad.client.host.memory.* measurement.measurement.measurement.field.field.node-id.datacenter.hostname",
+    "nomad.client.unallocated.* measurement.measurement.field.field.node-id.datacenter.hostname",
+    "nomad.uptime.* measurement.field.hostname",
+    "nomad.memberlist.tcp.* measurement.measurement.field.field.hostname",
+    "nomad.memberlist.udp.* measurement.measurement.field.field.hostname",
+    "nomad.memberlist.* measurement.measurement.field*",
+    "nomad.nomad.job_summary.* measurement.nomad.field.field.job.task-group.hostname",
+    "nomad.nomad.* measurement.nomad.field.field.hostname",
+    "nomad.raft.replication.*.*.*.*.*.* measurement.field.field.field.ip.ip.ip.ip.hostname",
+    "nomad.raft.replication.*.*.*.*.*.*.* measurement.field.field.field.field.ip.ip.ip.ip.hostname",
+    "nomad.raft.*.* measurement.field.fieldhostname",
+    "nomad.raft.*.*.* measurement.field.field.field.hostname",
+    "nomad.runtime.* measurement.field.field.hostname",
+    "nomad.serf.* measurement.field.field.hostname"
+  ]
+  parse_data_dog_tags = false
+  allowed_pending_messages = 10000
+  percentile_limit = 1000
+
+```
